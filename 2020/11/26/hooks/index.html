@@ -1,0 +1,415 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/cxm.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/cxm.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/cxm.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/cxm.github.io/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/cxm.github.io/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/cxm.github.io/","scheme":"Muse","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="git钩子分为客户端钩子以及服务器端钩子，这些钩子是基于事件的（event-baased）可以由git特定的指令触发并调用。当我们执行特定指令时，git就会从git仓库下的hooks目录下检查是否有相对应的脚本，有则执行。 git hooks是为了实现单一需求而被设计实现的。在一个多人协同开发项目的开发过程中，团队成员需要确保其编码风格的统一，确保部署方式的统一等，这些工作会造成大量的重复劳动，那">
+<meta property="og:type" content="article">
+<meta property="og:title" content="hooks">
+<meta property="og:url" content="https://github.com/github-cxm/cxm.github.io/2020/11/26/hooks/index.html">
+<meta property="og:site_name" content="cxm小站">
+<meta property="og:description" content="git钩子分为客户端钩子以及服务器端钩子，这些钩子是基于事件的（event-baased）可以由git特定的指令触发并调用。当我们执行特定指令时，git就会从git仓库下的hooks目录下检查是否有相对应的脚本，有则执行。 git hooks是为了实现单一需求而被设计实现的。在一个多人协同开发项目的开发过程中，团队成员需要确保其编码风格的统一，确保部署方式的统一等，这些工作会造成大量的重复劳动，那">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-26T10:32:46.000Z">
+<meta property="article:modified_time" content="2020-11-26T10:44:11.539Z">
+<meta property="article:author" content="cxm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/github-cxm/cxm.github.io/2020/11/26/hooks/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>hooks | cxm小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/cxm.github.io/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">cxm小站</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">cxm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/cxm.github.io/archives">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/github-cxm/cxm.github.io/2020/11/26/hooks/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/cxm.github.io/images/avatar.gif">
+      <meta itemprop="name" content="cxm">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxm小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          hooks
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-11-26 18:32:46 / Modified: 18:44:11" itemprop="dateCreated datePublished" datetime="2020-11-26T18:32:46+08:00">2020-11-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>git钩子分为客户端钩子以及服务器端钩子，这些钩子是基于事件的（event-baased）可以由git特定的指令触发并调用。当我们执行特定指令时，git就会从git仓库下的hooks目录下检查是否有相对应的脚本，有则执行。</p>
+<p>git hooks是为了实现单一需求而被设计实现的。在一个多人协同开发项目的开发过程中，团队成员需要确保其编码风格的统一，确保部署方式的统一等，这些工作会造成大量的重复劳动，那我们就可以利用钩子来帮助我们去完成这些重复性质的工作。</p>
+<a id="more"></a>
+
+<p>有一些脚本是在动作执行之前被执行的，这种“先行脚本”可用于实现代码规范的统一，完整性检查，环境搭建等功能。有一些脚本则会在事件之后被执行，这种“后行脚本”可用于实现代码部署，权限错误纠正（git此方面的功能有些欠缺）等功能。</p>
+<p>总体来说，git hooks可以实现策略强制执行、确保一致性、环境控制、部署任务处理等多种功能。</p>
+<p>引用Scott Chacon在他的Pro Git给出来的钩子划分类型：</p>
+<p><a target="_blank" rel="noopener" href="https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90">https://git-scm.com/book/zh/v2/%E8%87%AA%E5%AE%9A%E4%B9%89-Git-Git-%E9%92%A9%E5%AD%90</a></p>
+<p>Scott Chacon在他的Pro Git一书中将hooks划分为如下类型：<br>客户端的hook：此类hook在提交者（committer）的计算机上被调用执行。此类hook又分为如下几类：<br>代码提交相关的工作流hook：提交类hook作用在代码提交的动作前后，通常用于运行完整性检查、提交信息生成、信息内容验证等功能，也可以用来发送通知。<br>Email相关工作流hook：Email类hook主要用于使用Email提交的代码补丁。像是Linux内核这样的项目是采用Email进行补丁提交的，就可以使用此类hook。工作方式和提交类hook类似，而且项目维护者可以用此类hook直接完成打补丁的动作。<br>其他类：包括代码合并、签出（check out）、rebase、重写（rewrite）、以及软件仓库的清理等工作。<br>服务器端hook：此类hook作用在服务器端，一般用于接收推送，部署在项目的git仓库主干（main）所在的服务器上。Chacon将服务器端hook分为两类：<br>接受触发类：在服务器接收到一个推送之前或之后执行动作，前触发常用于检查，后触发常用于部署。<br>更新：类似于前触发，不过更新类hook是以分支（branch）作为作用对象，在每一个分支更新通过之前执行代码。<br>上述分类有助于我们对hook建立一个整体的概念，了解它可以用于哪类事件。当然了，要能够实际的运用它，还需要亲自动手操作、调试。</p>
+<p>有些hook可以接受参数。也就是说，当git调用了hook的脚本时，我们可以传递一些数据给这个脚本。可用的hook列表如下：</p>
+<p>关于git hooks 的环境变量<br>调用hook时会涉及到一些环境变量，要让我们的脚本完成工作，那我们就需要把git在调用hook所变更的环境变量再修改回去。<br>这是编写git hook时需要特别注意的地方，git在调用不同的hook时会设置不同的环境变量，也就是说，调用不同的hook，git会从不同的环境中拉取信息。这样一来，脚本环境就会变得不可控，我们可能根本不会意识到那些环境变量被自动更改了。而且这些发生改变的变量完全没有在git文档中说明。幸运的是，Mark Longair找到了一种测试方法来检查每个hook被调用时所变更的环境变量。这个测试方法只需要你把下面这几行代码粘贴到你的git hook脚本中即可：</p>
+<p>#!/bin/bash<br>echo Running $BASH_SOURCE<br>set | egrep GIT<br>echo PWD is $PWD</p>
+<p>以下是大牛做的测试结果：</p>
+<p>● 在以下测试中，本地项目目录为<br>/home/demo/test_hooks</p>
+<p>，远程路径为<br>/home/demo/origin/test_hooks.git</p>
+<p>。<br>Hooks：<br>applypatch-msg</p>
+<p>、<br>pre-applypatch</p>
+<p>、<br>post-applypatch</p>
+<p>● 环境变量：<br>○ GIT_AUTHOR_DATE=’Mon, 11 Aug 2014 11:25:16 -0400’<br>○ GIT_AUTHOR_EMAIL=demo@example.com<br>○ GIT_AUTHOR_NAME=’Demo User’<br>○ GIT_INTERNAL_GETTEXT_SH_SCHEME=gnu<br>○ GIT_REFLOG_ACTION=am<br>○ 工作目录: /home/demo/test_hooks<br>Hooks：<br>pre-commit</p>
+<p>、<br>prepare-commit-msg</p>
+<p>、<br>commit-msg</p>
+<p>、<br>post-commit</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GIT_AUTHOR_DATE&#x3D;’@1407774159 -0400’</span><br><span class="line">○ GIT_AUTHOR_EMAIL&#x3D;demo@example.com</span><br><span class="line">○ GIT_AUTHOR_NAME&#x3D;’Demo User’</span><br><span class="line">○ GIT_DIR&#x3D;.git</span><br><span class="line">○ GIT_EDITOR&#x3D;:</span><br><span class="line">○ GIT_INDEX_FILE&#x3D;.git&#x2F;index</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>pre-rebase</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GIT_INTERNAL_GETTEXT_SH_SCHEME&#x3D;gnu</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>post-checkout</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GIT_DIR&#x3D;.git</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>post-merge</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GITHEAD_4b407c…</span><br><span class="line">○ GIT_DIR&#x3D;.git</span><br><span class="line">○ GIT_INTERNAL_GETTEXT_SH_SCHEME&#x3D;gnu</span><br><span class="line">○ GIT_PREFIX&#x3D;</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>pre-push</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GIT_PREFIX&#x3D;</span><br><span class="line">○ 工作目录: &#x2F;home&#x2F;demo&#x2F;test_hooks</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>pre-receive</p>
+<p>update</p>
+<p>post-receive</p>
+<p>post-update</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>pre-auto-gc</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">○ 这个很难测试所以信息缺失</span><br></pre></td></tr></table></figure>
+
+<p>Hooks:<br>post-rewrite</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">○ 环境变量：</span><br><span class="line">○ GIT_AUTHOR_DATE&#x3D;’@1407773551 -0400’</span><br><span class="line">○ GIT_AUTHOR_EMAIL&#x3D;demo@example.com</span><br><span class="line">○ GIT_AUTHOR_NAME&#x3D;’Demo User’</span><br><span class="line">○ GIT_DIR&#x3D;.git</span><br><span class="line">○ GIT_PREFIX&#x3D;</span><br><span class="line">○ 工作目录: &#x2F;home&#x2F;demo&#x2F;test_hooks</span><br></pre></td></tr></table></figure>
+
+<p>以上就是git在调用不同hook时所看到的环境。有了这些信息，我们可以回去编写我们的脚本了。</p>
+<p>编写完成脚本后记得在最后给脚本添加权限。</p>
+<p>搬运自以下网站：</p>
+<p><a target="_blank" rel="noopener" href="https://blog.csdn.net/zstack_org/article/details/53100257?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase">https://blog.csdn.net/zstack_org/article/details/53100257?utm_medium=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase&amp;depth_1-utm_source=distribute.pc_relevant.none-task-blog-BlogCommendFromMachineLearnPai2-2.nonecase</a></p>
+
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/cxm.github.io/2020/11/26/git%E6%9C%AC%E5%9C%B0push%E4%BB%A3%E7%A0%81%E8%BF%9C%E7%A8%8B%E6%9C%8D%E5%8A%A1%E5%99%A8%E6%97%A0%E6%B3%95%E8%87%AA%E5%8A%A8%E5%90%8C%E6%AD%A5%E8%A7%A3%E5%86%B3%E6%96%B9%E6%B3%95/" rel="prev" title="git本地push代码远程服务器无法自动同步解决方法">
+                  <i class="fa fa-chevron-left"></i> git本地push代码远程服务器无法自动同步解决方法
+                </a>
+            </div>
+            <div class="post-nav-item">
+                <a href="/cxm.github.io/2020/11/26/Linux%E6%9D%83%E9%99%90%E8%AF%A6%E8%A7%A3%EF%BC%88chmod%E3%80%81600%E3%80%81644%E3%80%81666%E3%80%81700%E3%80%81711%E3%80%81755%E3%80%81777%E3%80%814755%E3%80%816755%E3%80%817755%EF%BC%89/" rel="next" title="Linux权限详解（chmod、600、644、666、700、711、755、777、4755、6755、7755）">
+                  Linux权限详解（chmod、600、644、666、700、711、755、777、4755、6755、7755） <i class="fa fa-chevron-right"></i>
+                </a>
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxm</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/cxm.github.io/js/utils.js"></script><script src="/cxm.github.io/js/motion.js"></script><script src="/cxm.github.io/js/schemes/muse.js"></script><script src="/cxm.github.io/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>

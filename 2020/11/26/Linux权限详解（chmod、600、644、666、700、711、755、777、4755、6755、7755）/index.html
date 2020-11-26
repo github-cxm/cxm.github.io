@@ -1,0 +1,413 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=2">
+<meta name="theme-color" content="#222">
+<meta name="generator" content="Hexo 5.2.0">
+
+
+  <link rel="apple-touch-icon" sizes="180x180" href="/cxm.github.io/images/apple-touch-icon-next.png">
+  <link rel="icon" type="image/png" sizes="32x32" href="/cxm.github.io/images/favicon-32x32-next.png">
+  <link rel="icon" type="image/png" sizes="16x16" href="/cxm.github.io/images/favicon-16x16-next.png">
+  <link rel="mask-icon" href="/cxm.github.io/images/logo.svg" color="#222">
+
+<link rel="stylesheet" href="/cxm.github.io/css/main.css">
+
+
+
+<link rel="stylesheet" href="//cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@5.15.1/css/all.min.css">
+  <link rel="stylesheet" href="//cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css">
+
+<script class="hexo-configurations">
+    var NexT = window.NexT || {};
+    var CONFIG = {"hostname":"github.com","root":"/cxm.github.io/","scheme":"Muse","version":"8.0.2","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"Searching...","empty":"We didn't find any results for the search: ${query}","hits_time":"${hits} results found in ${time} ms","hits":"${hits} results found"}};
+  </script>
+
+  <meta name="description" content="#权限简介Linux系统上对文件的权限有着严格的控制，用于如果相对某个文件执行某种操作，必须具有对应的权限方可执行成功。Linux下文件的权限类型一般包括读，写，执行。对应字母为 r、w、x。Linux下权限的粒度有 拥有者 、群组 、其它组 三种。每个文件都可以针对三个粒度，设置不同的rwx(读写执行)权限。通常情况下，一个文件只能归属于一个用户和组， 如果其它的用户想有这个文件的权限，则可以将">
+<meta property="og:type" content="article">
+<meta property="og:title" content="Linux权限详解（chmod、600、644、666、700、711、755、777、4755、6755、7755）">
+<meta property="og:url" content="https://github.com/github-cxm/cxm.github.io/2020/11/26/Linux%E6%9D%83%E9%99%90%E8%AF%A6%E8%A7%A3%EF%BC%88chmod%E3%80%81600%E3%80%81644%E3%80%81666%E3%80%81700%E3%80%81711%E3%80%81755%E3%80%81777%E3%80%814755%E3%80%816755%E3%80%817755%EF%BC%89/index.html">
+<meta property="og:site_name" content="cxm小站">
+<meta property="og:description" content="#权限简介Linux系统上对文件的权限有着严格的控制，用于如果相对某个文件执行某种操作，必须具有对应的权限方可执行成功。Linux下文件的权限类型一般包括读，写，执行。对应字母为 r、w、x。Linux下权限的粒度有 拥有者 、群组 、其它组 三种。每个文件都可以针对三个粒度，设置不同的rwx(读写执行)权限。通常情况下，一个文件只能归属于一个用户和组， 如果其它的用户想有这个文件的权限，则可以将">
+<meta property="og:locale" content="en_US">
+<meta property="article:published_time" content="2020-11-26T10:32:58.000Z">
+<meta property="article:modified_time" content="2020-11-26T10:45:17.213Z">
+<meta property="article:author" content="cxm">
+<meta name="twitter:card" content="summary">
+
+
+<link rel="canonical" href="https://github.com/github-cxm/cxm.github.io/2020/11/26/Linux%E6%9D%83%E9%99%90%E8%AF%A6%E8%A7%A3%EF%BC%88chmod%E3%80%81600%E3%80%81644%E3%80%81666%E3%80%81700%E3%80%81711%E3%80%81755%E3%80%81777%E3%80%814755%E3%80%816755%E3%80%817755%EF%BC%89/">
+
+
+<script class="page-configurations">
+  // https://hexo.io/docs/variables.html
+  CONFIG.page = {
+    sidebar: "",
+    isHome : false,
+    isPost : true,
+    lang   : 'en'
+  };
+</script>
+
+  <title>Linux权限详解（chmod、600、644、666、700、711、755、777、4755、6755、7755） | cxm小站</title>
+  
+
+
+
+
+
+
+  <noscript>
+  <style>
+  body { margin-top: 2rem; }
+
+  .use-motion .menu-item,
+  .use-motion .sidebar,
+  .use-motion .post-block,
+  .use-motion .pagination,
+  .use-motion .comments,
+  .use-motion .post-header,
+  .use-motion .post-body,
+  .use-motion .collection-header {
+    visibility: visible;
+  }
+
+  .use-motion .header,
+  .use-motion .site-brand-container .toggle,
+  .use-motion .footer { opacity: initial; }
+
+  .use-motion .site-title,
+  .use-motion .site-subtitle,
+  .use-motion .custom-logo-image {
+    opacity: initial;
+    top: initial;
+  }
+
+  .use-motion .logo-line {
+    transform: scaleX(1);
+  }
+
+  .search-pop-overlay, .sidebar-nav { display: none; }
+  .sidebar-panel { display: block; }
+  </style>
+</noscript>
+
+</head>
+
+<body itemscope itemtype="http://schema.org/WebPage" class="use-motion">
+  <div class="headband"></div>
+
+  <main class="main">
+    <header class="header" itemscope itemtype="http://schema.org/WPHeader">
+      <div class="header-inner"><div class="site-brand-container">
+  <div class="site-nav-toggle">
+    <div class="toggle" aria-label="Toggle navigation bar">
+    </div>
+  </div>
+
+  <div class="site-meta">
+
+    <a href="/cxm.github.io/" class="brand" rel="start">
+      <i class="logo-line"></i>
+      <h1 class="site-title">cxm小站</h1>
+      <i class="logo-line"></i>
+    </a>
+  </div>
+
+  <div class="site-nav-right">
+    <div class="toggle popup-trigger">
+    </div>
+  </div>
+</div>
+
+
+
+
+
+
+
+</div>
+        
+  
+  <div class="toggle sidebar-toggle">
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+    <span class="toggle-line"></span>
+  </div>
+
+  <aside class="sidebar">
+
+    <div class="sidebar-inner sidebar-overview-active">
+      <ul class="sidebar-nav">
+        <li class="sidebar-nav-toc">
+          Table of Contents
+        </li>
+        <li class="sidebar-nav-overview">
+          Overview
+        </li>
+      </ul>
+
+      <div class="sidebar-panel-container">
+        <!--noindex-->
+        <section class="post-toc-wrap sidebar-panel">
+        </section>
+        <!--/noindex-->
+
+        <section class="site-overview-wrap sidebar-panel">
+          <div class="site-author site-overview-item animated" itemprop="author" itemscope itemtype="http://schema.org/Person">
+  <p class="site-author-name" itemprop="name">cxm</p>
+  <div class="site-description" itemprop="description"></div>
+</div>
+<div class="site-state-wrap site-overview-item animated">
+  <nav class="site-state">
+      <div class="site-state-item site-state-posts">
+          <a href="/cxm.github.io/archives">
+          <span class="site-state-item-count">3</span>
+          <span class="site-state-item-name">posts</span>
+        </a>
+      </div>
+  </nav>
+</div>
+
+
+
+        </section>
+      </div>
+    </div>
+  </aside>
+  <div class="sidebar-dimmer"></div>
+
+
+    </header>
+
+    
+  <div class="back-to-top">
+    <i class="fa fa-arrow-up"></i>
+    <span>0%</span>
+  </div>
+
+<noscript>
+  <div class="noscript-warning">Theme NexT works best with JavaScript enabled</div>
+</noscript>
+
+
+    <div class="main-inner post posts-expand">
+      
+
+      
+
+  
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="en">
+    <link itemprop="mainEntityOfPage" href="https://github.com/github-cxm/cxm.github.io/2020/11/26/Linux%E6%9D%83%E9%99%90%E8%AF%A6%E8%A7%A3%EF%BC%88chmod%E3%80%81600%E3%80%81644%E3%80%81666%E3%80%81700%E3%80%81711%E3%80%81755%E3%80%81777%E3%80%814755%E3%80%816755%E3%80%817755%EF%BC%89/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/cxm.github.io/images/avatar.gif">
+      <meta itemprop="name" content="cxm">
+      <meta itemprop="description" content="">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="cxm小站">
+    </span>
+      <header class="post-header">
+        <h1 class="post-title" itemprop="name headline">
+          Linux权限详解（chmod、600、644、666、700、711、755、777、4755、6755、7755）
+        </h1>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">Posted on</span>
+      
+
+      <time title="Created: 2020-11-26 18:32:58 / Modified: 18:45:17" itemprop="dateCreated datePublished" datetime="2020-11-26T18:32:58+08:00">2020-11-26</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+        <p>#权限简介<br>Linux系统上对文件的权限有着严格的控制，用于如果相对某个文件执行某种操作，必须具有对应的权限方可执行成功。<br>Linux下文件的权限类型一般包括读，写，执行。对应字母为 r、w、x。<br>Linux下权限的粒度有 拥有者 、群组 、其它组 三种。每个文件都可以针对三个粒度，设置不同的rwx(读写执行)权限。通常情况下，一个文件只能归属于一个用户和组， 如果其它的用户想有这个文件的权限，则可以将该用户加入具备权限的群组，一个用户可以同时归属于多个组。<br>Linux上通常使用chmod命令对文件的权限进行设置和更改。</p>
+<a id="more"></a>
+
+<p>#一、快速入门<br>更改文件权限 （chmod命令）<br>一般使用格式<br>chmod [可选项] &lt;file…&gt;</p>
+<p>参数说明：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br><span class="line">9</span><br><span class="line">10</span><br><span class="line">11</span><br><span class="line">12</span><br><span class="line">13</span><br><span class="line">14</span><br><span class="line">15</span><br><span class="line">16</span><br><span class="line">17</span><br><span class="line">18</span><br><span class="line">19</span><br><span class="line">20</span><br><span class="line">21</span><br><span class="line">22</span><br><span class="line">23</span><br></pre></td><td class="code"><pre><span class="line">[可选项]</span><br><span class="line">  -c, --changes          like verbose but report only when a change is made (若该档案权限确实已经更改，才显示其更改动作)</span><br><span class="line">  -f, --silent, --quiet  suppress most error messages  （若该档案权限无法被更改也不要显示错误讯息）</span><br><span class="line">  -v, --verbose          output a diagnostic for every file processed（显示权限变更的详细资料）</span><br><span class="line">       --no-preserve-root  do not treat &#39;&#x2F;&#39; specially (the default)</span><br><span class="line">       --preserve-root    fail to operate recursively on &#39;&#x2F;&#39;</span><br><span class="line">       --reference&#x3D;RFILE  use RFILE&#39;s mode instead of MODE values</span><br><span class="line">  -R, --recursive        change files and directories recursively （以递归的方式对目前目录下的所有档案与子目录进行相同的权限变更)</span><br><span class="line">       --help		显示此帮助信息</span><br><span class="line">       --version		显示版本信息</span><br><span class="line">[mode] </span><br><span class="line">    权限设定字串，详细格式如下 ：</span><br><span class="line">    [ugoa...][[+-&#x3D;][rwxX]...][,...]，</span><br><span class="line">    其中</span><br><span class="line">    [ugoa...]</span><br><span class="line">    u 表示该档案的拥有者，g 表示与该档案的拥有者属于同一个群体(group)者，o 表示其他以外的人，a 表示所有（包含上面三者）。</span><br><span class="line">    [+-&#x3D;]</span><br><span class="line">    + 表示增加权限，- 表示取消权限，&#x3D; 表示唯一设定权限。</span><br><span class="line">    [rwxX]</span><br><span class="line">    r 表示可读取，w 表示可写入，x 表示可执行，X 表示只有当该档案是个子目录或者该档案已经被设定过为可执行。</span><br><span class="line"> 	</span><br><span class="line">[file...]</span><br><span class="line">    文件列表（单个或者多个文件、文件夹）</span><br></pre></td></tr></table></figure>
+
+
+<p>范例：</p>
+<p>设置所有用户可读取文件 a.conf<br>chmod ugo+r a.conf<br>或<br>chmod a+r a.conf<br>设置 c.sh 只有 拥有者可以读写及执行<br>chmod u+rwx c.sh<br>设置文件 a.conf 与 b.xml 权限为拥有者与其所属同一个群组 可读写，其它组可读不可写<br>chmod a+r,ug+w,o-w a.conf b.xml<br>设置当前目录下的所有档案与子目录皆设为任何人可读写<br>chmod -R a+rw *<br>数字权限使用格式<br>在这种使用方式中，首先我们需要了解数字如何表示权限。 首先，我们规定 数字 4 、2 和 1表示读、写、执行权限（具体原因可见下节权限详解内容），即 r=4，w=2，x=1 。此时其他的权限组合也可以用其他的八进制数字表示出来，</p>
+<p>如：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br></pre></td><td class="code"><pre><span class="line">rwx &#x3D; 4 + 2 + 1 &#x3D; 7</span><br><span class="line"></span><br><span class="line">rw &#x3D; 4 + 2 &#x3D; 6</span><br><span class="line"></span><br><span class="line">rx &#x3D; 4 +1 &#x3D; 5</span><br></pre></td></tr></table></figure>
+
+<p>即</p>
+<p>若要同时设置 rwx (可读写运行） 权限则将该权限位 设置 为 4 + 2 + 1 = 7</p>
+<p>若要同时设置 rw- （可读写不可运行）权限则将该权限位 设置 为 4 + 2 = 6</p>
+<p>若要同时设置 r-x （可读可运行不可写）权限则将该权限位 设置 为 4 +1 = 5</p>
+<p>上面我们提到，每个文件都可以针对三个粒度，设置不同的rwx(读写执行)权限。即我们可以用用三个8进制数字分别表示 拥有者 、群组 、其它组( u、 g 、o)的权限详情，并用chmod直接加三个8进制数字的方式直接改变文件权限。语法格式为 ：</p>
+<p>chmod file…</p>
+<p>其中<br>a,b,c各为一个数字，分别代表User、Group、及Other的权限。<br>相当于简化版的<br>chmod u=权限,g=权限,o=权限 file…<br>而此处的权限将用8进制的数字来表示User、Group、及Other的读、写、执行权限<br>范例：</p>
+<p>设置所有人可以读写及执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 777 file  (等价于  chmod u&#x3D;rwx,g&#x3D;rwx,o&#x3D;rwx file 或  chmod a&#x3D;rwx file)</span><br></pre></td></tr></table></figure>
+
+<p>设置拥有者可读写，其他人不可读写执行</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">chmod 600 file (等价于  chmod u&#x3D;rw,g&#x3D;---,o&#x3D;--- file 或 chmod u&#x3D;rw,go-rwx file )</span><br></pre></td></tr></table></figure>
+
+<p>更改文件拥有者（chown命令）<br>linux/Unix 是多人多工作业系统，每个的文件都有拥有者（所有者），如果我们想变更文件的拥有者（利用 chown 将文件拥有者加以改变），一般只有系统管理员(root)拥有此操作权限，而普通用户则没有权限将自己或者别人的文件的拥有者设置为别人。</p>
+<p>语法格式：</p>
+<p>chown [可选项] user[:group] file…</p>
+<p>使用权限：root</p>
+<p>说明：<br>[可选项] : 同上文chmod<br>user : 新的文件拥有者的使用者<br>group : 新的文件拥有者的使用者群体(group)<br>范例：</p>
+<p>设置文件 d.key、e.scrt的拥有者设为 users 群体的 tom<br>chown tom:users file d.key e.scrt<br>设置当前目录下与子目录下的所有文件的拥有者为 users 群体的 James<br>chown -R James:users *</p>
+<p>#二、Linux权限详解<br>Linux系统上对文件的权限有着严格的控制，用于如果相对某个文件执行某种操作，必须具有对应的权限方可执行成功。这也是Linux有别于Windows的机制，也是基于这个权限机制，Linux可以有效防止病毒自我运行，因为运行的条件是必须要有运行的权限，而这个权限在Linux是用户所赋予的。</p>
+<p>Linux的文件权限有以下设定：</p>
+<p>Linux下文件的权限类型一般包括读，写，执行。对应字母为 r、w、x。<br>Linux下权限的属组有 拥有者 、群组 、其它组 三种。每个文件都可以针对这三个属组（粒度），设置不同的rwx(读写执行)权限。<br>通常情况下，一个文件只能归属于一个用户和组， 如果其它的用户想有这个文件的权限，则可以将该用户加入具备权限的群组，一个用户可以同时归属于多个组。<br>如果我们要表示一个文件的所有权限详情，有两种方式：</p>
+<p>第一种是十位二进制表示法，(三个属组每个数组使用一个二进制位，再加一个最高位共十位)，可简化为三位八进制形式<br>另外一种十二位二进制表示法(十二个二进制位)，可简化为四位八进制形式<br>十位权限表示<br>常见的权限表示形式有：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br></pre></td><td class="code"><pre><span class="line">rw------- (600)      只有拥有者有读写权限。</span><br><span class="line">rw-r--r-- (644)      只有拥有者有读写权限；而属组用户和其他用户只有读权限。</span><br><span class="line">rwx------ (700)     只有拥有者有读、写、执行权限。</span><br><span class="line">rwxr-xr-x (755)    拥有者有读、写、执行权限；而属组用户和其他用户只有读、执行权限。</span><br><span class="line">rwx--x--x (711)    拥有者有读、写、执行权限；而属组用户和其他用户只有执行权限。</span><br><span class="line">rw-rw-rw- (666)   所有用户都有文件读、写权限。</span><br><span class="line">rwxrwxrwx (777)  所有用户都有读、写、执行权限。</span><br></pre></td></tr></table></figure>
+
+<p>后九位解析： 我们知道Linux权限总共有三个属组，这里我们给每个属组使用三个位置来定义三种操作（读、写、执行）权限，合起来则是权限的后九位。 上面我们用字符表示权限，其中 -代表无权限，r代表读权限，w代表写权限，x代表执行权限。</p>
+<p>实际上，后九位每个位置的意义（代表某个属组的某个权限）都是固定的，如果我们将各个位置权限的有无用二进制数 1和 0来代替，则只读、只写、只执行权限，可以用三位二进制数表示为</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br></pre></td><td class="code"><pre><span class="line">r-- &#x3D; 100</span><br><span class="line">w- &#x3D; 010</span><br><span class="line">-x &#x3D; 001</span><br><span class="line">-- &#x3D; 000</span><br></pre></td></tr></table></figure>
+
+<p>转换成八进制数，则为 r=4, w=2, x=1, -=0（这也就是用数字设置权限时为何是4代表读，2代表写，1代表执行）</p>
+<p>实际上，我们可以将所有的权限用二进制形式表现出来，并进一步转变成八进制数字：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br><span class="line">4</span><br><span class="line">5</span><br><span class="line">6</span><br><span class="line">7</span><br><span class="line">8</span><br></pre></td><td class="code"><pre><span class="line">rwx &#x3D; 111 &#x3D; 7</span><br><span class="line">rw- &#x3D; 110 &#x3D; 6</span><br><span class="line">r-x &#x3D; 101 &#x3D; 5</span><br><span class="line">r-- &#x3D; 100 &#x3D; 4</span><br><span class="line">wx &#x3D; 011 &#x3D; 3</span><br><span class="line">w- &#x3D; 010 &#x3D; 2</span><br><span class="line">-x &#x3D; 001 &#x3D; 1</span><br><span class="line">-- &#x3D; 000 &#x3D; 0</span><br></pre></td></tr></table></figure>
+
+<p>由上可以得出，每个属组的所有的权限都可以用一位八进制数表示，每个数字都代表了不同的权限（权值）。如 最高的权限为是7，代表可读，可写，可执行。</p>
+<p>故 如果我们将每个属组的权限都用八进制数表示，则文件的权限可以表示为三位八进制数</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br><span class="line">2</span><br><span class="line">3</span><br></pre></td><td class="code"><pre><span class="line">rw------- &#x3D;  600</span><br><span class="line">rw-rw-rw- &#x3D;  666</span><br><span class="line">rwxrwxrwx &#x3D;  777</span><br></pre></td></tr></table></figure>
+
+<p>关于第一位最高位的解释： 上面我们说到了权限表示中后九位的含义，剩下的第一位代表的是文件的类型，类型可以是下面几个中的一个：</p>
+<p>d代表的是目录(directroy)<br>代表的是文件(regular file)<br>s代表的是套字文件(socket)<br>p代表的管道文件(pipe)或命名管道文件(named pipe)<br>l代表的是符号链接文件(symbolic link)<br>b代表的是该文件是面向块的设备文件(block-oriented device file)<br>c代表的是该文件是面向字符的设备文件(charcter-oriented device file)</p>
+<p>本文原网址：</p>
+<figure class="highlight plain"><table><tr><td class="gutter"><pre><span class="line">1</span><br></pre></td><td class="code"><pre><span class="line">https:&#x2F;&#x2F;blog.csdn.net&#x2F;u013197629&#x2F;article&#x2F;details&#x2F;73608613</span><br></pre></td></tr></table></figure>
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+
+        
+
+          <div class="post-nav">
+            <div class="post-nav-item">
+                <a href="/cxm.github.io/2020/11/26/hooks/" rel="prev" title="hooks">
+                  <i class="fa fa-chevron-left"></i> hooks
+                </a>
+            </div>
+            <div class="post-nav-item">
+            </div>
+          </div>
+    </footer>
+  </article>
+</div>
+
+
+
+
+
+
+      
+
+<script>
+  window.addEventListener('tabs:register', () => {
+    let { activeClass } = CONFIG.comments;
+    if (CONFIG.comments.storage) {
+      activeClass = localStorage.getItem('comments_active') || activeClass;
+    }
+    if (activeClass) {
+      const activeTab = document.querySelector(`a[href="#comment-${activeClass}"]`);
+      if (activeTab) {
+        activeTab.click();
+      }
+    }
+  });
+  if (CONFIG.comments.storage) {
+    window.addEventListener('tabs:click', event => {
+      if (!event.target.matches('.tabs-comment .tab-content .tab-pane')) return;
+      const commentClass = event.target.classList[1];
+      localStorage.setItem('comments_active', commentClass);
+    });
+  }
+</script>
+
+    </div>
+  </main>
+
+  <footer class="footer">
+    <div class="footer-inner">
+      
+
+      
+
+<div class="copyright">
+  
+  &copy; 
+  <span itemprop="copyrightYear">2020</span>
+  <span class="with-love">
+    <i class="fa fa-heart"></i>
+  </span>
+  <span class="author" itemprop="copyrightHolder">cxm</span>
+</div>
+  <div class="powered-by">Powered by <a href="https://hexo.io/" class="theme-link" rel="noopener" target="_blank">Hexo</a> & <a href="https://theme-next.js.org/muse/" class="theme-link" rel="noopener" target="_blank">NexT.Muse</a>
+  </div>
+
+    </div>
+  </footer>
+
+  
+  <script src="//cdn.jsdelivr.net/npm/animejs@3.2.1/lib/anime.min.js"></script>
+<script src="/cxm.github.io/js/utils.js"></script><script src="/cxm.github.io/js/motion.js"></script><script src="/cxm.github.io/js/schemes/muse.js"></script><script src="/cxm.github.io/js/next-boot.js"></script>
+
+  
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+  
+
+
+
+
+
+
+
+
+  
+
+  
+
+</body>
+</html>
