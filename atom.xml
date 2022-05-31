@@ -6,7 +6,7 @@
   <link href="https://cxmblog.top/atom.xml" rel="self"/>
   
   <link href="https://cxmblog.top/"/>
-  <updated>2022-05-30T01:01:55.127Z</updated>
+  <updated>2022-05-30T01:00:25.488Z</updated>
   <id>https://cxmblog.top/</id>
   
   <author>
@@ -15,27 +15,6 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
-  
-  <entry>
-    <title>运算符</title>
-    <link href="https://cxmblog.top/2022/05/29/%E8%BF%90%E7%AE%97%E7%AC%A6/"/>
-    <id>https://cxmblog.top/2022/05/29/%E8%BF%90%E7%AE%97%E7%AC%A6/</id>
-    <published>2022-05-29T12:32:50.795Z</published>
-    <updated>2022-05-30T01:01:55.127Z</updated>
-    
-    <content type="html"><![CDATA[<h1 id="取余（取模）运算符"><a href="#取余（取模）运算符" class="headerlink" title="取余（取模）运算符%"></a>取余（取模）运算符%</h1><h3 id="取余运算的结果会根据公式：-a-a-x2F-b-x-b-得到"><a href="#取余运算的结果会根据公式：-a-a-x2F-b-x-b-得到" class="headerlink" title="取余运算的结果会根据公式： a - a &#x2F; b x b  得到"></a>取余运算的结果会根据公式： a - a &#x2F; b x b  得到</h3><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300854157.png" alt="image-20210513101206529"></p><span id="more"></span><p>**注意： a % b ,当 a 是小数的时候，公式： a - (itn)a &#x2F; b x b **</p><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856515.png" alt="image-20210513154539151"></p><p>**&#x3D;&#x3D;&gt;**当有小数参与运算得到的结果，是一个近似值</p><h1 id="自增运算符-（-–）"><a href="#自增运算符-（-–）" class="headerlink" title="自增运算符 （++–）"></a>自增运算符 （++–）</h1><p><strong>++  作为独立语句的时候，完全等价于 i &#x3D; i + 1;</strong></p><p><strong>++  作为表达式使用的时候， ++i 先自增后赋值， i++ 先赋值后自增</strong></p><p><strong>– 同理</strong></p><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856114.png" alt="image-20210513102833957"></p><p><strong>注意：</strong></p><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856000.png" alt="image-20210513104523995"></p><p>!<img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856729.png" alt="image-20210513105100451"></p><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856407.png" alt="image-20210513105813835"></p><h1 id="赋值运算符"><a href="#赋值运算符" class="headerlink" title="赋值运算符"></a>赋值运算符</h1><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856561.png" alt="image-20210513115101278"></p><h1 id="源码-反码-补码"><a href="#源码-反码-补码" class="headerlink" title="源码 反码 补码"></a>源码 反码 补码</h1><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856341.png" alt="image-20210513150414488"></p><p><strong>位预算符的运算规则</strong></p><p><img src="https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300856244.png" alt="image-20210513153636084"></p>]]></content>
-    
-    
-    <summary type="html">&lt;h1 id=&quot;取余（取模）运算符&quot;&gt;&lt;a href=&quot;#取余（取模）运算符&quot; class=&quot;headerlink&quot; title=&quot;取余（取模）运算符	%&quot;&gt;&lt;/a&gt;取余（取模）运算符	%&lt;/h1&gt;&lt;h3 id=&quot;取余运算的结果会根据公式：-a-a-x2F-b-x-b-得到&quot;&gt;&lt;a href=&quot;#取余运算的结果会根据公式：-a-a-x2F-b-x-b-得到&quot; class=&quot;headerlink&quot; title=&quot;取余运算的结果会根据公式： a - a &amp;#x2F; b x b  得到&quot;&gt;&lt;/a&gt;取余运算的结果会根据公式： a - a &amp;#x2F; b x b  得到&lt;/h3&gt;&lt;p&gt;&lt;img src=&quot;https://blog-images-blog.oss-cn-beijing.aliyuncs.com/images/202205300854157.png&quot; alt=&quot;image-20210513101206529&quot;&gt;&lt;/p&gt;</summary>
-    
-    
-    
-    <category term="java" scheme="https://cxmblog.top/categories/java/"/>
-    
-    
-    <category term="Java基础学习" scheme="https://cxmblog.top/tags/Java%E5%9F%BA%E7%A1%80%E5%AD%A6%E4%B9%A0/"/>
-    
-  </entry>
   
   <entry>
     <title>类与对象</title>
