@@ -180,7 +180,7 @@
 window.addEventListener('load',preloader.endLoading())</script><div class="js-pjax"><script>function addGitalkSource () {
   const ele = document.createElement('link')
   ele.rel = 'stylesheet'
-  ele.href= 'https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.css'
+  ele.href= '/js/gitalk.min.css'
   document.getElementsByTagName('head')[0].appendChild(ele)
 }
 
@@ -202,7 +202,7 @@ function loadGitalk () {
   if (typeof Gitalk === 'function') initGitalk()
   else {
     addGitalkSource()
-    getScript('https://cdn.bootcdn.net/ajax/libs/gitalk/1.7.2/gitalk.min.js').then(initGitalk)
+    getScript('/js/gitalk.min.js').then(initGitalk)
   }
 }
 
